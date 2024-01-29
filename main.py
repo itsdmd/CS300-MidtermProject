@@ -7,7 +7,7 @@ from modules.solver import Solver
 
 def load_map(map_path):
     """Load the map from the given path"""
-    f = open(map_path, 'r')
+    f = open(map_path, "r")
     map = []
     for line in f:
         map.append(list(line.strip()))
@@ -15,11 +15,12 @@ def load_map(map_path):
     return map
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--map', help='The map file', default='maps/demo.txt')
+    parser.add_argument("--map", help="The map file", default="maps/demo.txt")
     parser.add_argument(
-        '--strategy', help='The strategy to solve the game', default='custom')
+        "--strategy", help="The strategy to solve the game", default="bfs"
+    )
     args = parser.parse_args()
 
     map = load_map(args.map)

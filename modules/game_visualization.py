@@ -22,14 +22,18 @@ class GameVisualization(object):
         self.font = None
         self.block_size = 50
         self.margin = 5
-        self.width = (self.block_size + self.margin) * \
-            self.game_state.width + self.margin
-        self.height = (self.block_size + self.margin) * \
-            self.game_state.height + self.margin
-        self.x_offset = (self.width - self.game_state.width *
-                         self.block_size - self.margin) / 2
-        self.y_offset = (self.height - self.game_state.height *
-                         self.block_size - self.margin) / 2
+        self.width = (
+            self.block_size + self.margin
+        ) * self.game_state.width + self.margin
+        self.height = (
+            self.block_size + self.margin
+        ) * self.game_state.height + self.margin
+        self.x_offset = (
+            self.width - self.game_state.width * self.block_size - self.margin
+        ) / 2
+        self.y_offset = (
+            self.height - self.game_state.height * self.block_size - self.margin
+        ) / 2
 
         # Load assets
         self.load_assets()
@@ -37,29 +41,31 @@ class GameVisualization(object):
     def load_assets(self):
         # Load player image with 4 directions
         self.player_up_image = pygame.image.load(
-            os.path.join('assets', 'player_up.png'))
+            os.path.join("assets", "player_up.png")
+        )
         self.player_down_image = pygame.image.load(
-            os.path.join('assets', 'player_down.png'))
+            os.path.join("assets", "player_down.png")
+        )
         self.player_left_image = pygame.image.load(
-            os.path.join('assets', 'player_left.png'))
+            os.path.join("assets", "player_left.png")
+        )
         self.player_right_image = pygame.image.load(
-            os.path.join('assets', 'player_right.png'))
+            os.path.join("assets", "player_right.png")
+        )
 
-        self.wall_image = pygame.image.load(os.path.join('assets', 'wall.png'))
-        self.box_image = pygame.image.load(os.path.join('assets', 'box.png'))
-        self.target_image = pygame.image.load(
-            os.path.join('assets', 'target.png'))
-        self.floor_image = pygame.image.load(
-            os.path.join('assets', 'floor.png'))
+        self.wall_image = pygame.image.load(os.path.join("assets", "wall.png"))
+        self.box_image = pygame.image.load(os.path.join("assets", "box.png"))
+        self.target_image = pygame.image.load(os.path.join("assets", "target.png"))
+        self.floor_image = pygame.image.load(os.path.join("assets", "floor.png"))
 
     def init_pygame(self):
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption('Sokuban')
+        pygame.display.set_caption("Sokuban")
         self.clock = pygame.time.Clock()
-        self.font = pygame.font.SysFont('Arial', 20)
+        self.font = pygame.font.SysFont("Arial", 20)
 
-    def draw(self, direction='U'):
+    def draw(self, direction="U"):
         self.screen.fill((0, 0, 0))
         for i in range(self.game_state.height):
             for j in range(self.game_state.width):
@@ -78,16 +84,16 @@ class GameVisualization(object):
         x = self.x_offset + player_col * (self.block_size + self.margin)
         y = self.y_offset + player_row * (self.block_size + self.margin)
         rect = pygame.Rect(x, y, self.block_size, self.block_size)
-        if direction == 'U':
+        if direction == "U":
             self.screen.blit(self.player_up_image, rect)
-        elif direction == 'D':
+        elif direction == "D":
             self.screen.blit(self.player_down_image, rect)
-        elif direction == 'L':
+        elif direction == "L":
             self.screen.blit(self.player_left_image, rect)
-        elif direction == 'R':
+        elif direction == "R":
             self.screen.blit(self.player_right_image, rect)
         else:
-            raise Exception('Invalid direction')
+            raise Exception("Invalid direction")
         pygame.display.flip()
 
     def draw_solution(self):
@@ -99,7 +105,7 @@ class GameVisualization(object):
     def start(self):
         self.init_pygame()
         self.draw()
-        self.draw_solution()
+        # self.draw_solution()
         while True:
             for event in pygame.event.get():
                 if event.type == QUIT:
