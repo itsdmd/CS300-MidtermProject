@@ -38,15 +38,31 @@ class GameState:
     def find_player(self):
         """Find the player in the map and return its position"""
         # TODO: implement this method
-        return (0, 0)
+        position = (0, 0)
+        for row in range(self.height):
+            for col in range(self.width):
+                if self.map[row][col] in ["@", "+"]:
+                    position = (row, col)
+                    return position
+        return None
 
     def find_boxes(self):
         """Find all the boxes in the map and return their positions"""
-        pass
+        positions = []
+        for row in range(self.height):
+            for col in range(self.width):
+                if self.map[row][col] in ["$", "*"]:
+                    positions.append((row, col))
+        return positions
 
     def find_targets(self):
         """Find all the targets in the map and return their positions"""
-        pass
+        positions = []
+        for row in range(self.height):
+            for col in range(self.width):
+                if self.map[row][col] in [".", "*", "+"]:
+                    positions.append((row, col))
+        return positions
 
     # ------------------------------------------------------------------------------------------------------------------
     # The following methods are used to check if a position is a wall, box, target, or empty space
@@ -55,6 +71,7 @@ class GameState:
 
     def is_wall(self, position):
         """Check if the given position is a wall"""
+
         pass
 
     def is_box(self, position):
