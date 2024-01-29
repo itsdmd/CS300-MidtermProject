@@ -105,6 +105,23 @@ class GameState:
     # The following methods get heuristics for the game state (for informed search strategies)
     # ------------------------------------------------------------------------------------------------------------------
 
+    def get_distance(self, position1, position2):
+        """Get the distance between two positions using Manhattan distance"""
+        return abs(position1[0] - position2[0]) + abs(position1[1] - position2[1])
+
+    def get_nearest_target(self, position):
+        """Get the nearest target from the given position by exhaustive iteration"""
+        nearest_target = None
+        nearest_distance = self.height + self.width
+
+        for target in self.targets:
+            distance = self.get_distance(position, target)
+            if distance < nearest_distance:
+                nearest_target = target
+                nearest_distance = distance
+
+        return nearest_target
+
     def get_heuristic(self):
         """Get the heuristic for the game state
             Note: the heuristic is the sum of the distances from all the boxes to their nearest targets
@@ -115,19 +132,18 @@ class GameState:
             total_distance += min(distances)
         
         return total_distance
- 
 
     def get_total_cost(self):
         """Get the cost for the game state
             Note: the cost is the number of moves from the initial state to the current state + the heuristic
         """
-        pass
+        return self.current_cost + self.get_heuristic()
 
     def get_current_cost(self):
         """Get the current cost for the game state
             Note: the current cost is the number of moves from the initial state to the current state
         """
-        pass
+        return self.current_cost
 
     # ------------------------------------------------------------------------------------------------------------------
     # The following methods are used to generate the next game state and check if the game is solved
