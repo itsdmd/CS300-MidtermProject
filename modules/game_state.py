@@ -71,24 +71,23 @@ class GameState:
 
     def is_wall(self, position):
         """Check if the given position is a wall"""
-
-        pass
+        return self.map[position[0]][position[1]] == "#"
 
     def is_box(self, position):
         """Check if the given position is a box
         Note: the box can be on "$" or "*" (box on target)
         """
-        pass
+        return self.map[position[0]][position[1]] in ["$", "*"]
 
     def is_target(self, position):
         """Check if the given position is a target
         Note: the target can be "." or "*" (box on target)
         """
-        pass
+        return self.map[position[0]][position[1]] in [".", "*"]
 
     def is_empty(self, position):
         """Check if the given position is empty"""
-        pass
+        return self.map[position[0]][position[1]] in [" "]
 
     # ------------------------------------------------------------------------------------------------------------------
     # The following methods get heuristics for the game state (for informed search strategies)
