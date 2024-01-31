@@ -10,7 +10,7 @@
 # """
 
 import time
-
+from collections import deque
 
 class Solver(object):
     def __init__(self, initial_state, strategy):
@@ -38,10 +38,41 @@ class Solver(object):
         self.time = time.time() - start_time
 
     def bfs(self):
-        pass
-
+        
+        visited = set()
+        queue = deque([(self.initial_state, [])])
+        
+        while queue:
+            state, path = queue.popleft()
+            visited.add(state)
+            
+            if state.check_solved():
+                 return path
+            
+            for neighbor in state.generate_neighbors():
+                if neighbor not in visited:
+                    queue.append((neighbor, path + [neighbor]))
+        return None
+    
     def dfs(self):
-        pass
+    
+        visited = set
+        stack = [(self.initial_state, [])]
+
+        while stack:
+            state, path = stack.pop()
+            visited.add(state)
+
+            if state.check_solved():
+                return path
+            
+            for neighbor in state.generate_neighbors():
+                    if neighbor not in visited :
+                        stack.append((neighbor, path + [neighbor]))
+
+        return None
+
+              
 
     def astar(self):
         pass
