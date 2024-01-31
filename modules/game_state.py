@@ -34,7 +34,7 @@ class GameState:
         self.boxes = self.find_boxes()
         self.targets = self.find_targets()
         self.is_solved = self.check_solved()
-        
+        self.parent = None
 
     # ------------------------------------------------------------------------------------------------------------------
     # The following methods are used to find the player, boxes, and targets in the map
@@ -46,7 +46,7 @@ class GameState:
         # TODO: implement this method
         for y, row in enumerate(self.map):
             for x, cell in enumerate(row):
-                if cell in ('@', '+'):  # Player or player on target
+                if cell in ("@", "+"):  # Player or player on target
                     return y, x
         return None
 
@@ -55,7 +55,7 @@ class GameState:
         boxes = []
         for y, row in enumerate(self.map):
             for x, cell in enumerate(row):
-                if self.is_box((y,x)):  # Box or box on target
+                if self.is_box((y, x)):  # Box or box on target
                     boxes.append((y, x))
         return boxes
 
@@ -65,7 +65,7 @@ class GameState:
         targets = []
         for y, row in enumerate(self.map):
             for x, cell in enumerate(row):
-                if self.is_target((y,x)):  # Target or box on target
+                if self.is_target((y, x)):  # Target or box on target
                     targets.append((y, x))
         return targets
 
@@ -77,7 +77,7 @@ class GameState:
     def is_wall(self, position):
         """Check if the given position is a wall"""
         x, y = position
-        if self.map[x][y] == '#':
+        if self.map[x][y] == "#":
             return True
         return False
 
@@ -86,7 +86,7 @@ class GameState:
             Note: the box can be on "$" or "*" (box on target)
         """
         x, y = position
-        if  self.map[x][y] in ('$', '*'):
+        if self.map[x][y] in ("$", "*"):
             return True
         return False
 
@@ -95,14 +95,14 @@ class GameState:
             Note: the target can be "." or "*" (box on target)
         """
         x, y = position
-        if self.map[x][y] in ('.', '*'):
+        if self.map[x][y] in (".", "*"):
             return True
         return False
 
     def is_empty(self, position):
         """Check if the given position is empty"""
         x, y = position
-        if self.map[x][y] == ' ':
+        if self.map[x][y] == " ":
             return True
         return False
 
@@ -133,9 +133,12 @@ class GameState:
         """
         total_distance = 0
         for box in self.boxes:
-            distances = [abs(box[0] - target[0]) + abs(box[1] - target[1]) for target in self.targets]
-            total_distance += min(distances)
-        
+            distances = [
+                abs(box[0] - target[0]) + abs(box[1] - target[1])
+                for target in self.targets
+            ]
+            if distances:
+                total_distance += min(distances)
         return total_distance
 
     def get_total_cost(self):
@@ -156,6 +159,14 @@ class GameState:
 
     def new_position(self, position, direction):
         """Get the new position after moving to the given direction"""
+        # Check if out of bound
+        if (
+            position[0] < 0
+            or position[0] >= self.height
+            or position[1] < 0
+            or position[1] >= self.width
+        ):
+            return position
         if direction == "U":
             return (position[0] - 1, position[1])
         elif direction == "D":
@@ -184,19 +195,32 @@ class GameState:
         new_pos = self.new_position(self.player, direction)
 
         if self.is_empty(new_pos):
-            self.map[self.player[0]][self.player[1]] = " "
+            # Check if player is on target
+            if self.map[self.player[0]][self.player[1]] == "+":
+                self.map[self.player[0]][self.player[1]] = "."
+            else:
+                self.map[self.player[0]][self.player[1]] = " "
             self.map[new_pos[0]][new_pos[1]] = "@"
             self.player = new_pos
-            return GameState(self.map, self.current_cost + 1)
 
-        if self.is_target(new_pos):
-            self.map[self.player[0]][self.player[1]] = " "
+            self.current_cost += 1
+            return self
+
+        # Check if player is on target and not on box-on-target
+        if self.is_target(new_pos) and not self.is_box(new_pos):
+            if self.map[self.player[0]][self.player[1]] == "+":
+                self.map[self.player[0]][self.player[1]] = "."
+            else:
+                self.map[self.player[0]][self.player[1]] = " "
             self.map[new_pos[0]][new_pos[1]] = "+"
             self.player = new_pos
-            return GameState(self.map, self.current_cost + 1)
+
+            self.current_cost += 1
+            return self
 
         if self.is_wall(new_pos):
-            return GameState(self.map, self.current_cost + 1)
+            self.current_cost += 1
+            return self
 
         if self.is_box(new_pos):
             # Position where the box is pushed to
@@ -204,39 +228,78 @@ class GameState:
 
             # If the box is pushed to an empty space
             if self.is_empty(new_box_pos):
-                # Update the player position
-                self.map[self.player[0]][self.player[1]] = " "
-                self.map[new_pos[0]][new_pos[1]] = "@"
-                self.player = new_pos
+                # If box currently on target, set current position to target
+                if self.map[new_pos[0]][new_pos[1]] == "*":
+                    self.map[new_pos[0]][new_pos[1]] = "."
+                else:
+                    self.map[new_pos[0]][new_pos[1]] = " "
                 # Update the box position
                 self.map[new_box_pos[0]][new_box_pos[1]] = "$"
                 self.boxes.remove(new_pos)
                 self.boxes.append(new_box_pos)
-                return GameState(self.map, self.current_cost + 1)
+
+                # If player currently on target, set current position to target
+                if self.map[self.player[0]][self.player[1]] == "+":
+                    self.map[self.player[0]][self.player[1]] = "."
+                else:
+                    self.map[self.player[0]][self.player[1]] = " "
+                # Update the player position
+                # If position where box was pushed from is target, set player position to be on target
+                if self.map[new_pos[0]][new_pos[1]] == ".":
+                    self.map[new_pos[0]][new_pos[1]] = "+"
+                else:
+                    self.map[new_pos[0]][new_pos[1]] = "@"
+                self.player = new_pos
+
+                self.current_cost += 1
+                return self
 
             # If the box is pushed to a target
             if self.is_target(new_box_pos):
-                # Update the player position
-                self.map[self.player[0]][self.player[1]] = " "
-                self.player = new_pos
                 # Update the box position
-                self.map[new_pos[0]][new_pos[1]] = "@"
+                if self.map[new_pos[0]][new_pos[1]] == "*":
+                    self.map[new_pos[0]][new_pos[1]] = "."
+                else:
+                    self.map[new_pos[0]][new_pos[1]] = " "
                 self.map[new_box_pos[0]][new_box_pos[1]] = "*"
                 self.boxes.remove(new_pos)
                 self.boxes.append(new_box_pos)
-                return GameState(self.map, self.current_cost + 1)
+
+                # Update the player position
+                if self.map[self.player[0]][self.player[1]] == "+":
+                    self.map[self.player[0]][self.player[1]] = "."
+                else:
+                    self.map[self.player[0]][self.player[1]] = " "
+                if self.map[new_pos[0]][new_pos[1]] == ".":
+                    self.map[new_pos[0]][new_pos[1]] = "+"
+                else:
+                    self.map[new_pos[0]][new_pos[1]] = "@"
+                self.player = new_pos
+
+                self.current_cost += 1
+                return self
 
             # If the box is pushed to a wall
             if self.is_wall(new_box_pos):
-                # Return the current game state
-                return GameState(self.map, self.current_cost + 1)
+                self.current_cost += 1
+                return self
 
             # If the box is pushed to another box
             if self.is_box(new_box_pos):
-                # Return the current game state
-                return GameState(self.map, self.current_cost + 1)
+                self.current_cost += 1
+                return self
 
-        return GameState(self.map, self.current_cost + 1)
+        return self
+
+    def generate_neighbors(self):
+        neighbors = []
+        for direction in ["U", "D", "L", "R"]:
+            neighbor = deepcopy(self)
+            neighbor.parent = deepcopy(self)
+            neighbor.move(direction)
+            # neighbor.print_state()
+            neighbors.append(neighbor)
+        return neighbors
 
     def generate_neighbors(self):
         neighbors = []
@@ -250,14 +313,19 @@ class GameState:
 
     def check_solved(self):
         """Check if the game is solved"""
-        # Iterate through all the boxes
-        for box in self.boxes:
-            # If one of theme has position not in the targets, return False
-            if box not in self.targets:
-                return False
+        if self.get_heuristic() == 0:
+            return True
+        return False
 
     def print_state(self):
         """Print the game state"""
+        print(
+            "Heuristic: "
+            + str(self.get_heuristic())
+            + " | "
+            + " Cost: "
+            + str(self.get_current_cost())
+        )
         for row in self.map:
             print("".join(row))
         print("")
