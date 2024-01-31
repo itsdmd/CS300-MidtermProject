@@ -30,17 +30,29 @@ if __name__ == "__main__":
     solver = Solver(game_state, strategy)
     solver.solve()
     solution = solver.get_solution()
-    for i in solution:
-        i.print_state()
-    
+    for state in solution:
+        state.print_state()
 
     # game_state.print_state()
+    # next_game_state = game_state.move("U")
+    # next_game_state.print_state()
     # next_game_state = game_state.move("R")
     # next_game_state.print_state()
     # next_game_state = game_state.move("U")
     # next_game_state.print_state()
     # next_game_state = game_state.move("L")
     # next_game_state.print_state()
+    # next_game_state = game_state.move("D")
+    # next_game_state.print_state()
+    # next_game_state = game_state.move("L")
+    # next_game_state.print_state()
+    # next_game_state = game_state.move("U")
+    # next_game_state.print_state()
+    # next_game_state = game_state.move("U")
+    # next_game_state.print_state()
+    # next_game_state = game_state.move("L")
+    # next_game_state.print_state()
+
     # next_game_states = game_state.generate_neighbors()
     # for next_game_state in next_game_states:
     #     next_game_state.print_state()
