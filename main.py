@@ -31,5 +31,16 @@ if __name__ == "__main__":
     solver.solve()
     solution = solver.get_solution()
 
-    game_visualization = GameVisualization(game_state, solution)
-    game_visualization.start()
+    game_state.print_state()
+    next_game_state = game_state.move("R")
+    next_game_state.print_state()
+    next_game_state = game_state.move("U")
+    next_game_state.print_state()
+    next_game_state = game_state.move("L")
+    next_game_state.print_state()
+    next_game_states = game_state.generate_neighbors()
+    for next_game_state in next_game_states:
+        next_game_state.print_state()
+
+    # game_visualization = GameVisualization(game_state, solution)
+    # game_visualization.start()
