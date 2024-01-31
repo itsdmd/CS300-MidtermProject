@@ -83,7 +83,7 @@ class GameState:
 
     def is_box(self, position):
         """Check if the given position is a box
-        Note: the box can be on "$" or "*" (box on target)
+            Note: the box can be on "$" or "*" (box on target)
         """
         x, y = position
         if self.map[x][y] in ("$", "*"):
@@ -92,7 +92,7 @@ class GameState:
 
     def is_target(self, position):
         """Check if the given position is a target
-        Note: the target can be "." or "*" (box on target)
+            Note: the target can be "." or "*" (box on target)
         """
         x, y = position
         if self.map[x][y] in (".", "*"):
@@ -129,7 +129,7 @@ class GameState:
 
     def get_heuristic(self):
         """Get the heuristic for the game state
-        Note: the heuristic is the sum of the distances from all the boxes to their nearest targets
+            Note: the heuristic is the sum of the distances from all the boxes to their nearest targets
         """
         total_distance = 0
         for box in self.boxes:
@@ -139,18 +139,17 @@ class GameState:
             ]
             if distances:
                 total_distance += min(distances)
-
         return total_distance
 
     def get_total_cost(self):
         """Get the cost for the game state
-        Note: the cost is the number of moves from the initial state to the current state + the heuristic
+            Note: the cost is the number of moves from the initial state to the current state + the heuristic
         """
         return self.current_cost + self.get_heuristic()
 
     def get_current_cost(self):
         """Get the current cost for the game state
-        Note: the current cost is the number of moves from the initial state to the current state
+            Note: the current cost is the number of moves from the initial state to the current state
         """
         return self.current_cost
 
@@ -168,7 +167,6 @@ class GameState:
             or position[1] >= self.width
         ):
             return position
-
         if direction == "U":
             return (position[0] - 1, position[1])
         elif direction == "D":
@@ -182,15 +180,15 @@ class GameState:
             return (position[0], position[1])
 
     def move(self, direction):
-        """Generate the next game state by moving the player to the given direction.
-        The rules are as follows:
-        - The player can move to an empty space
-        - The player can move to a target
-        - The player can push a box to an empty space (the box moves to the empty space, the player moves to the box's previous position)
-        - The player can push a box to a target (the box moves to the target, the player moves to the box's previous position)
-        - The player cannot move to a wall
-        - The player cannot push a box to a wall
-        - The player cannot push two boxes at the same time
+        """Generate the next game state by moving the player to the given direction. 
+            The rules are as follows:
+            - The player can move to an empty space
+            - The player can move to a target
+            - The player can push a box to an empty space (the box moves to the empty space, the player moves to the box's previous position)
+            - The player can push a box to a target (the box moves to the target, the player moves to the box's previous position)
+            - The player cannot move to a wall
+            - The player cannot push a box to a wall
+            - The player cannot push two boxes at the same time
         """
         # TODO: implement this method
 
@@ -301,6 +299,16 @@ class GameState:
             neighbor.move(direction)
             # neighbor.print_state()
             neighbors.append(neighbor)
+        return neighbors
+
+    def generate_neighbors(self):
+        neighbors = []
+        original_state = deepcopy(self)
+        for direction in ["U", "D", "L", "R"]:
+            neighbor = self.move(direction)
+            neighbors.append(neighbor)
+            # Reset to the original state
+            self = deepcopy(original_state)
         return neighbors
 
     def check_solved(self):
