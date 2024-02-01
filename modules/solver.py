@@ -42,8 +42,6 @@ class Solver(object):
         self.time = time.time() - start_time
 
     def bfs(self):
-        start_time = time.time()
-
         visited = set()
         queue = deque([(self.initial_state, [])])
 
@@ -51,8 +49,6 @@ class Solver(object):
             state, path = queue.popleft()
 
             if state.check_solved():
-                stop_time = time.time()
-                self.time = stop_time - start_time
                 return path
 
             visited.add(str(state.map))
@@ -61,13 +57,9 @@ class Solver(object):
                 if str(neighbor.map) not in visited:
                     queue.append((neighbor, path + [neighbor]))
 
-        stop_time = time.time()
-        self.time = stop_time - start_time
         return None
 
     def dfs(self):
-        start_time = time.time()
-
         visited = set()
         stack = [(self.initial_state, [])]
 
@@ -75,8 +67,6 @@ class Solver(object):
             state, path = stack.pop()
 
             if state.check_solved():
-                stop_time = time.time()
-                self.time = stop_time - start_time
                 return path
 
             visited.add(str(state.map))
@@ -85,13 +75,9 @@ class Solver(object):
                 if str(neighbor.map) not in visited:
                     stack.insert(0, (neighbor, path + [neighbor]))
 
-        stop_time = time.time()
-        self.time = stop_time - start_time
         return None
 
     def astar(self):
-        start_time = time.time()
-
         visited = set()
         priority_queue = PriorityQueue()
         priority_queue.put((0, self.initial_state, []))
@@ -100,8 +86,6 @@ class Solver(object):
             _, state, path = priority_queue.get()
 
             if state.check_solved():
-                stop_time = time.time()
-                self.time = stop_time - start_time
                 return path
 
             visited.add(str(state.map))
@@ -114,13 +98,9 @@ class Solver(object):
                         (neighbor.compare_value, neighbor, path + [neighbor])
                     )
 
-        stop_time = time.time()
-        self.time = stop_time - start_time
         return None
 
     def ucs(self):
-        start_time = time.time()
-
         visited = set()
         priority_queue = PriorityQueue()
         priority_queue.put((0, self.initial_state, []))
@@ -129,8 +109,6 @@ class Solver(object):
             cost, state, path = priority_queue.get()
 
             if state.check_solved():
-                stop_time = time.time()
-                self.time = stop_time - start_time
                 return path
 
             visited.add(str(state.map))
@@ -142,13 +120,9 @@ class Solver(object):
                         (neighbor.compare_value, neighbor, path + [neighbor])
                     )
 
-        stop_time = time.time()
-        self.time = stop_time - start_time
         return None
 
     def greedy(self):
-        start_time = time.time()
-
         visited = set()
         priority_queue = PriorityQueue()
         priority_queue.put((0, self.initial_state, []))
@@ -157,8 +131,6 @@ class Solver(object):
             _, state, path = priority_queue.get()
 
             if state.check_solved():
-                stop_time = time.time()
-                self.time = stop_time - start_time
                 return path
 
             visited.add(str(state.map))
@@ -166,13 +138,10 @@ class Solver(object):
             for neighbor in state.generate_neighbors():
                 if str(neighbor.map) not in visited:
                     neighbor.compare_value = neighbor.get_heuristic()
-                    neighbor.print_state()
                     priority_queue.put(
                         (neighbor.compare_value, neighbor, path + [neighbor])
                     )
 
-        stop_time = time.time()
-        self.time = stop_time - start_time
         return None
 
     def custom(self):
@@ -183,3 +152,6 @@ class Solver(object):
 
     def get_solution(self):
         return self.solution
+
+    def print_time(self):
+        print("Time taken: " + str(self.time))
