@@ -35,9 +35,12 @@ class GameState:
         self.targets = self.find_targets()
         self.is_solved = self.check_solved()
         self.parent = None
+        self.compare_value = 0
 
     def __lt__(self, other):
-        return self.current_cost < other.current_cost
+        return self.compare_value < other.compare_value
+        
+    
 
     # ------------------------------------------------------------------------------------------------------------------
     # The following methods are used to find the player, boxes, and targets in the map

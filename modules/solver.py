@@ -42,6 +42,8 @@ class Solver(object):
         self.time = time.time() - start_time
 
     def bfs(self):
+        start_time = time.time()
+
         visited = set()
         queue = deque([(self.initial_state, [])])
 
@@ -49,16 +51,23 @@ class Solver(object):
             state, path = queue.popleft()
 
             if state.check_solved():
+                stop_time = time.time()
+                self.time = stop_time - start_time
                 return path
 
-            visited.add(state)
+            visited.add(str(state.map))
 
             for neighbor in state.generate_neighbors():
-                if neighbor not in visited:
+                if str(neighbor.map) not in visited:
                     queue.append((neighbor, path + [neighbor]))
+
+        stop_time = time.time()
+        self.time = stop_time - start_time
         return None
 
     def dfs(self):
+        start_time = time.time()
+
         visited = set()
         stack = [(self.initial_state, [])]
 
@@ -66,20 +75,52 @@ class Solver(object):
             state, path = stack.pop()
 
             if state.check_solved():
+                stop_time = time.time()
+                self.time = stop_time - start_time
                 return path
 
-            visited.add(state)
+            visited.add(str(state.map))
 
             for neighbor in state.generate_neighbors():
-                if neighbor not in visited:
+                if str(neighbor.map) not in visited:
                     stack.insert(0, (neighbor, path + [neighbor]))
 
+        stop_time = time.time()
+        self.time = stop_time - start_time
         return None
 
     def astar(self):
-        pass
+        start_time = time.time()
+
+        visited = set()
+        priority_queue = PriorityQueue()
+        priority_queue.put((0, self.initial_state, []))
+
+        while not priority_queue.empty():
+            _, state, path = priority_queue.get()
+
+            if state.check_solved():
+                stop_time = time.time()
+                self.time = stop_time - start_time
+                return path
+
+            visited.add(str(state.map))
+
+            for neighbor in state.generate_neighbors():
+                if str(neighbor.map) not in visited:
+                    neighbor.compare_value = neighbor.get_total_cost()
+                    neighbor.parent = state
+                    priority_queue.put(
+                        (neighbor.compare_value, neighbor, path + [neighbor])
+                    )
+
+        stop_time = time.time()
+        self.time = stop_time - start_time
+        return None
 
     def ucs(self):
+        start_time = time.time()
+
         visited = set()
         priority_queue = PriorityQueue()
         priority_queue.put((0, self.initial_state, []))
@@ -88,18 +129,51 @@ class Solver(object):
             cost, state, path = priority_queue.get()
 
             if state.check_solved():
+                stop_time = time.time()
+                self.time = stop_time - start_time
                 return path
-            
-            visited.add(state)
+
+            visited.add(str(state.map))
 
             for neighbor in state.generate_neighbors():
-                if neighbor not in visited:
-                    priority_queue.put((cost + 1, neighbor, path + [neighbor]))
+                if str(neighbor.map) not in visited:
+                    neighbor.compare_value = cost + 1
+                    priority_queue.put(
+                        (neighbor.compare_value, neighbor, path + [neighbor])
+                    )
 
+        stop_time = time.time()
+        self.time = stop_time - start_time
         return None
 
     def greedy(self):
-        pass
+        start_time = time.time()
+
+        visited = set()
+        priority_queue = PriorityQueue()
+        priority_queue.put((0, self.initial_state, []))
+
+        while not priority_queue.empty():
+            _, state, path = priority_queue.get()
+
+            if state.check_solved():
+                stop_time = time.time()
+                self.time = stop_time - start_time
+                return path
+
+            visited.add(str(state.map))
+
+            for neighbor in state.generate_neighbors():
+                if str(neighbor.map) not in visited:
+                    neighbor.compare_value = neighbor.get_heuristic()
+                    neighbor.print_state()
+                    priority_queue.put(
+                        (neighbor.compare_value, neighbor, path + [neighbor])
+                    )
+
+        stop_time = time.time()
+        self.time = stop_time - start_time
+        return None
 
     def custom(self):
         return [
