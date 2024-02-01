@@ -11,7 +11,7 @@
 
 import time
 from collections import deque
-from queue import Queue
+from queue import Queue, PriorityQueue
 
 from modules.game_state import GameState
 
@@ -80,7 +80,23 @@ class Solver(object):
         pass
 
     def ucs(self):
-        pass
+        visited = set()
+        priority_queue = PriorityQueue()
+        priority_queue.put((0, self.initial_state, []))
+
+        while not priority_queue.empty():
+            cost, state, path = priority_queue.get()
+
+            if state.check_solved():
+                return path
+            
+            visited.add(state)
+
+            for neighbor in state.generate_neighbors():
+                if neighbor not in visited:
+                    priority_queue.put((cost + 1, neighbor, path + [neighbor]))
+
+        return None
 
     def greedy(self):
         pass
