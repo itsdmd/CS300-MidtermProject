@@ -36,11 +36,10 @@ class GameState:
         self.is_solved = self.check_solved()
         self.parent = None
         self.compare_value = 0
+        self.last_move = "N"
 
     def __lt__(self, other):
         return self.compare_value < other.compare_value
-        
-    
 
     # ------------------------------------------------------------------------------------------------------------------
     # The following methods are used to find the player, boxes, and targets in the map
@@ -89,7 +88,7 @@ class GameState:
 
     def is_box(self, position):
         """Check if the given position is a box
-            Note: the box can be on "$" or "*" (box on target)
+        Note: the box can be on "$" or "*" (box on target)
         """
         x, y = position
         if self.map[x][y] in ("$", "*"):
@@ -98,7 +97,7 @@ class GameState:
 
     def is_target(self, position):
         """Check if the given position is a target
-            Note: the target can be "." or "*" (box on target)
+        Note: the target can be "." or "*" (box on target)
         """
         x, y = position
         if self.map[x][y] in (".", "*"):
@@ -135,7 +134,7 @@ class GameState:
 
     def get_heuristic(self):
         """Get the heuristic for the game state
-            Note: the heuristic is the sum of the distances from all the boxes to their nearest targets
+        Note: the heuristic is the sum of the distances from all the boxes to their nearest targets
         """
         total_distance = 0
         for box in self.boxes:
@@ -149,13 +148,13 @@ class GameState:
 
     def get_total_cost(self):
         """Get the cost for the game state
-            Note: the cost is the number of moves from the initial state to the current state + the heuristic
+        Note: the cost is the number of moves from the initial state to the current state + the heuristic
         """
         return self.current_cost + self.get_heuristic()
 
     def get_current_cost(self):
         """Get the current cost for the game state
-            Note: the current cost is the number of moves from the initial state to the current state
+        Note: the current cost is the number of moves from the initial state to the current state
         """
         return self.current_cost
 
@@ -186,18 +185,19 @@ class GameState:
             return (position[0], position[1])
 
     def move(self, direction):
-        """Generate the next game state by moving the player to the given direction. 
-            The rules are as follows:
-            - The player can move to an empty space
-            - The player can move to a target
-            - The player can push a box to an empty space (the box moves to the empty space, the player moves to the box's previous position)
-            - The player can push a box to a target (the box moves to the target, the player moves to the box's previous position)
-            - The player cannot move to a wall
-            - The player cannot push a box to a wall
-            - The player cannot push two boxes at the same time
+        """Generate the next game state by moving the player to the given direction.
+        The rules are as follows:
+        - The player can move to an empty space
+        - The player can move to a target
+        - The player can push a box to an empty space (the box moves to the empty space, the player moves to the box's previous position)
+        - The player can push a box to a target (the box moves to the target, the player moves to the box's previous position)
+        - The player cannot move to a wall
+        - The player cannot push a box to a wall
+        - The player cannot push two boxes at the same time
         """
         # TODO: implement this method
 
+        self.last_move = direction
         new_pos = self.new_position(self.player, direction)
 
         if self.is_empty(new_pos):
@@ -306,7 +306,6 @@ class GameState:
             # neighbor.print_state()
             neighbors.append(neighbor)
         return neighbors
-
 
     def check_solved(self):
         """Check if the game is solved"""

@@ -55,7 +55,7 @@ class Solver(object):
 
             for neighbor in state.generate_neighbors():
                 if str(neighbor.map) not in visited:
-                    queue.append((neighbor, path + [neighbor]))
+                    queue.append((neighbor, path + [neighbor.last_move]))
 
         return None
 
@@ -73,7 +73,7 @@ class Solver(object):
 
             for neighbor in state.generate_neighbors():
                 if str(neighbor.map) not in visited:
-                    stack.insert(0, (neighbor, path + [neighbor]))
+                    stack.insert(0, (neighbor, path + [neighbor.last_move]))
 
         return None
 
@@ -95,7 +95,7 @@ class Solver(object):
                     neighbor.compare_value = neighbor.get_total_cost()
                     neighbor.parent = state
                     priority_queue.put(
-                        (neighbor.compare_value, neighbor, path + [neighbor])
+                        (neighbor.compare_value, neighbor, path + [neighbor.last_move])
                     )
 
         return None
@@ -117,7 +117,7 @@ class Solver(object):
                 if str(neighbor.map) not in visited:
                     neighbor.compare_value = cost + 1
                     priority_queue.put(
-                        (neighbor.compare_value, neighbor, path + [neighbor])
+                        (neighbor.compare_value, neighbor, path + [neighbor.last_move])
                     )
 
         return None
@@ -139,7 +139,7 @@ class Solver(object):
                 if str(neighbor.map) not in visited:
                     neighbor.compare_value = neighbor.get_heuristic()
                     priority_queue.put(
-                        (neighbor.compare_value, neighbor, path + [neighbor])
+                        (neighbor.compare_value, neighbor, path + [neighbor.last_move])
                     )
 
         return None
