@@ -36,6 +36,9 @@ class GameState:
         self.is_solved = self.check_solved()
         self.parent = None
 
+    def __lt__(self, other):
+        return self.current_cost < other.current_cost
+
     # ------------------------------------------------------------------------------------------------------------------
     # The following methods are used to find the player, boxes, and targets in the map
     # The positions are tuples (row, column)
@@ -301,15 +304,6 @@ class GameState:
             neighbors.append(neighbor)
         return neighbors
 
-    def generate_neighbors(self):
-        neighbors = []
-        original_state = deepcopy(self)
-        for direction in ["U", "D", "L", "R"]:
-            neighbor = self.move(direction)
-            neighbors.append(neighbor)
-            # Reset to the original state
-            self = deepcopy(original_state)
-        return neighbors
 
     def check_solved(self):
         """Check if the game is solved"""
