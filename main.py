@@ -30,9 +30,7 @@ if __name__ == "__main__":
     solver = Solver(game_state, strategy)
     solver.solve()
     solution = solver.get_solution()
-    for state in solution:
-        state.print_state()
     solver.print_time()
 
-    # game_visualization = GameVisualization(game_state, solution)
-    # game_visualization.start()
+    game_visualization = GameVisualization(game_state, solution)
+    game_visualization.start()
