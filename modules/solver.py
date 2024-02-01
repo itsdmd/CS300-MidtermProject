@@ -77,7 +77,26 @@ class Solver(object):
         return None
 
     def astar(self):
-        pass
+        visited = set()
+        priority_queue = PriorityQueue()
+        priority_queue.put((0, self.initial_state, []))
+
+        while not priority_queue.empty():
+            _, state, path = priority_queue.get()
+            
+            if state.check_solved():
+                return path
+            
+            visited.add(state)
+
+            for neighbor in state.generate_neighbors():
+                if neighbor not in visited:
+                    neighbor.compare_value = neighbor.get_total_cost()
+                    neighbor.parent = state
+                    priority_queue.put((neighbor.get_total_cost(), neighbor, path + [neighbor]))
+
+        return None
+
 
     def ucs(self):
         visited = set()
@@ -94,12 +113,30 @@ class Solver(object):
 
             for neighbor in state.generate_neighbors():
                 if neighbor not in visited:
-                    priority_queue.put((cost + 1, neighbor, path + [neighbor]))
+                    neighbor.compare_value = cost + 1
+                    priority_queue.put((neighbor.compare_value, neighbor, path + [neighbor]))
 
         return None
 
     def greedy(self):
-        pass
+        visited = set()
+        priority_queue = PriorityQueue()
+        priority_queue.put((self.initial_state.get_heuristic(),self.initial_state, []))
+
+        while not priority_queue.empty():
+            _, state, path = priority_queue.get()
+
+            if state.check_solved():
+                return path
+            
+            visited.add(state)
+
+            for neighbor in state.generate_neighbors():
+                if neighbor not in visited:
+                    neighbor.compare_value = neighbor.get_heuristic()
+                    priority_queue.put((neighbor.compare_value, neighbor, path + [neighbor]))
+
+        return None
 
     def custom(self):
         return [
