@@ -21,6 +21,7 @@ class Solver(object):
         self.initial_state = initial_state
         self.strategy = strategy
         self.solution = None
+        self.num_of_expanded_nodes = 0
         self.time = None
 
     def solve(self):
@@ -42,18 +43,27 @@ class Solver(object):
         self.time = time.time() - start_time
 
     def bfs(self):
-        visited = set()
-        queue = deque([(self.initial_state, [])])
+        visited = set()  # Set to keep track of visited nodes
+        queue = deque(
+            [(self.initial_state, [])]
+        )  # Queue to keep track of states to explore. Initialize with the initial state.
 
+        # While there are states to explore
         while queue:
-            state, path = queue.popleft()
+            # Get the next state to explore
+            state, path = queue.popleft()  # Pop the leftmost state from the queue.
 
+            # If the state is solved, return the path
             if state.check_solved():
                 return path
 
+            # Add the state to the visited set
             visited.add(str(state.map))
 
+            # Generate the neighbors of the state
             for neighbor in state.generate_neighbors():
+                self.num_of_expanded_nodes += 1
+                # If the neighbor has not been visited, add it to the back of the queue.
                 if str(neighbor.map) not in visited:
                     queue.append((neighbor, path + [neighbor.last_move]))
 
@@ -64,7 +74,7 @@ class Solver(object):
         stack = [(self.initial_state, [])]
 
         while stack:
-            state, path = stack.pop()
+            state, path = stack.pop()  # Pop the rightmost state from the stack.
 
             if state.check_solved():
                 return path
@@ -72,6 +82,8 @@ class Solver(object):
             visited.add(str(state.map))
 
             for neighbor in state.generate_neighbors():
+                self.num_of_expanded_nodes += 1
+                # If the neighbor has not been visited, add it to the front of the stack.
                 if str(neighbor.map) not in visited:
                     stack.insert(0, (neighbor, path + [neighbor.last_move]))
 
@@ -79,11 +91,15 @@ class Solver(object):
 
     def astar(self):
         visited = set()
-        priority_queue = PriorityQueue()
+        priority_queue = (
+            PriorityQueue()
+        )  # Priority queue is used for automatic sorting of the states based on their compare_value
         priority_queue.put((0, self.initial_state, []))
 
         while not priority_queue.empty():
-            _, state, path = priority_queue.get()
+            _, state, path = (
+                priority_queue.get()
+            )  # Astar uses the compare_value for prioritizing the states
 
             if state.check_solved():
                 return path
@@ -91,9 +107,13 @@ class Solver(object):
             visited.add(str(state.map))
 
             for neighbor in state.generate_neighbors():
+                self.num_of_expanded_nodes += 1
                 if str(neighbor.map) not in visited:
+                    # Compare value is the total cost of the state
                     neighbor.compare_value = neighbor.get_total_cost()
+                    # Set the parent of the neighbor to the current state
                     neighbor.parent = state
+                    # The object with format (compare_value, state, path) is added to the priority queue
                     priority_queue.put(
                         (neighbor.compare_value, neighbor, path + [neighbor.last_move])
                     )
@@ -106,7 +126,9 @@ class Solver(object):
         priority_queue.put((0, self.initial_state, []))
 
         while not priority_queue.empty():
-            cost, state, path = priority_queue.get()
+            cost, state, path = (
+                priority_queue.get()
+            )  # UCS uses the cost for prioritizing the states
 
             if state.check_solved():
                 return path
@@ -114,6 +136,7 @@ class Solver(object):
             visited.add(str(state.map))
 
             for neighbor in state.generate_neighbors():
+                self.num_of_expanded_nodes += 1
                 if str(neighbor.map) not in visited:
                     neighbor.compare_value = cost + 1
                     priority_queue.put(
@@ -128,7 +151,9 @@ class Solver(object):
         priority_queue.put((0, self.initial_state, []))
 
         while not priority_queue.empty():
-            _, state, path = priority_queue.get()
+            _, state, path = (
+                priority_queue.get()
+            )  # Greedy search uses the heuristic value for prioritizing the states
 
             if state.check_solved():
                 return path
@@ -136,6 +161,7 @@ class Solver(object):
             visited.add(str(state.map))
 
             for neighbor in state.generate_neighbors():
+                self.num_of_expanded_nodes += 1
                 if str(neighbor.map) not in visited:
                     neighbor.compare_value = neighbor.get_heuristic()
                     priority_queue.put(
@@ -145,6 +171,7 @@ class Solver(object):
         return None
 
     def custom(self):
+        num_of_expanded_nodes = 2
         return [
             "U",
             "U",
@@ -152,6 +179,12 @@ class Solver(object):
 
     def get_solution(self):
         return self.solution
+
+    def print_num_of_expanded_nodes(self):
+        print("Number of expanded states: " + str(self.num_of_expanded_nodes))
+
+    def print_number_of_moves(self):
+        print("Number of moves: " + str(len(self.solution)))
 
     def print_time(self):
         print("Time taken: " + str(self.time))

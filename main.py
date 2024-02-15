@@ -19,7 +19,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--map", help="The map file", default="maps/demo.txt")
     parser.add_argument(
-        "--strategy", help="The strategy to solve the game", default="ucs"
+        "--strategy", help="The strategy to solve the game", default="bfs"
     )
     args = parser.parse_args()
 
@@ -30,6 +30,8 @@ if __name__ == "__main__":
     solver = Solver(game_state, strategy)
     solver.solve()
     solution = solver.get_solution()
+    solver.print_generated_states()
+    solver.print_number_of_moves()
     solver.print_time()
 
     game_visualization = GameVisualization(game_state, solution)

@@ -229,8 +229,9 @@ class GameState:
             return self
 
         if self.is_box(new_pos):
-            # Position where the box is pushed to
-            new_box_pos = self.new_position(new_pos, direction)
+            new_box_pos = self.new_position(
+                new_pos, direction
+            )  # Position where the box is pushed to
 
             # If the box is pushed to an empty space
             if self.is_empty(new_box_pos):
@@ -298,6 +299,7 @@ class GameState:
         return self
 
     def generate_neighbors(self):
+        """Generate the neighbors of the game state by moving the player in all directions"""
         neighbors = []
         for direction in ["U", "D", "L", "R"]:
             neighbor = deepcopy(self)
