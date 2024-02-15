@@ -180,6 +180,9 @@ class Solver(object):
     def get_solution(self):
         return self.solution
 
+    def print_solution(self):
+        print("Solution: " + str(self.solution))
+
     def print_num_of_expanded_nodes(self):
         print("Number of expanded states: " + str(self.num_of_expanded_nodes))
 

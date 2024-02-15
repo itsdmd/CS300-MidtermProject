@@ -93,12 +93,13 @@ class GameVisualization(object):
         elif direction == "R":
             self.screen.blit(self.player_right_image, rect)
         elif direction == "N":
-            pass
+            self.screen.blit(self.player_down_image, rect)
         else:
             raise Exception("Invalid direction")
         pygame.display.flip()
 
     def draw_solution(self):
+        self.solution = ["N"] + self.solution  # Add the initial state
         for i in range(len(self.solution)):
             self.game_state = self.game_state.move(self.solution[i])
             self.draw(self.solution[i])
