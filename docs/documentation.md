@@ -72,17 +72,17 @@ Each algorithm will be ran 3 times. The result will be the average time (rounded
 | Algorithm | Time (s) | Expanded Nodes | Path Length |
 | --------- | -------- | -------------- | ----------- |
 | BFS       | 0.240    | 344            | 6           |
-| DFS       | 0.238    | 344            | 6           |
-| UCS       | 0.296    | 404            | 6           |
+| DFS       | 0.112    | 79             | 12          |
+| UCS       | 0.286    | 404            | 6           |
 | A\*       | 0.078    | 140            | 6           |
-| GBFS      | 0.015    | 36             | 6           |
+| GBFS      | 0.016    | 36             | 6           |
 
 [`maps/demo_2.txt`](https://github.com/itsdmd/CS300-MidtermProject/blob/main/maps/demo_2.txt) (10x8):
 
 | Algorithm | Time (s) | Expanded Nodes | Path Length |
 | --------- | -------- | -------------- | ----------- |
 | BFS       | 31.618   | 9652           | 26          |
-| DFS       | 31.241   | 9652           | 26          |
+| DFS       | 14.362   | 1747           | 52          |
 | UCS       | 29.712   | 9288           | 26          |
 | A\*       | 9.975    | 3964           | 26          |
 | GBFS      | 2.271    | 904            | 32          |

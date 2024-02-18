@@ -71,11 +71,8 @@ class Solver(object):
 
     def dfs(self):
         visited = set()
-        stack = [(self.initial_state, [])]
 
-        while stack:
-            state, path = stack.pop()  # Pop the rightmost state from the stack.
-
+        def dfs_recursive(state, path, visited):
             if state.check_solved():
                 return path
 
@@ -83,11 +80,16 @@ class Solver(object):
 
             for neighbor in state.generate_neighbors():
                 self.num_of_expanded_nodes += 1
-                # If the neighbor has not been visited, add it to the front of the stack.
                 if str(neighbor.map) not in visited:
-                    stack.insert(0, (neighbor, path + [neighbor.last_move]))
+                    result = dfs_recursive(
+                        neighbor, path + [neighbor.last_move], visited
+                    )
+                    if result:
+                        return result
 
-        return None
+            return None
+
+        return dfs_recursive(self.initial_state, [], visited)
 
     def astar(self):
         visited = set()
@@ -97,7 +99,11 @@ class Solver(object):
         priority_queue.put((0, self.initial_state, []))
 
         while not priority_queue.empty():
-            _, state, path = (
+            (
+                _,
+                state,
+                path,
+            ) = (
                 priority_queue.get()
             )  # Astar uses the compare_value for prioritizing the states
 
@@ -126,9 +132,11 @@ class Solver(object):
         priority_queue.put((0, self.initial_state, []))
 
         while not priority_queue.empty():
-            cost, state, path = (
-                priority_queue.get()
-            )  # UCS uses the cost for prioritizing the states
+            (
+                cost,
+                state,
+                path,
+            ) = priority_queue.get()  # UCS uses the cost for prioritizing the states
 
             if state.check_solved():
                 return path
@@ -151,7 +159,11 @@ class Solver(object):
         priority_queue.put((0, self.initial_state, []))
 
         while not priority_queue.empty():
-            _, state, path = (
+            (
+                _,
+                state,
+                path,
+            ) = (
                 priority_queue.get()
             )  # Greedy search uses the heuristic value for prioritizing the states
 

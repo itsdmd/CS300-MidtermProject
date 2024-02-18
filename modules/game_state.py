@@ -180,9 +180,10 @@ class GameState:
             return (position[0], position[1] - 1)
         elif direction == "R":
             return (position[0], position[1] + 1)
+        elif direction == "N":
+            return position
         else:
-            print("Invalid direction")
-            return (position[0], position[1])
+            raise Exception("Invalid direction")
 
     def move(self, direction):
         """Generate the next game state by moving the player to the given direction.
