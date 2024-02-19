@@ -33,6 +33,7 @@ class GameState:
         self.player = self.find_player()
         self.boxes = self.find_boxes()
         self.targets = self.find_targets()
+        self.targets_without_box = self.find_targets_without_box()
         self.is_solved = self.check_solved()
         self.parent = None
         self.compare_value = 0
@@ -74,6 +75,15 @@ class GameState:
                     targets.append((y, x))
         return targets
 
+    def find_targets_without_box(self):
+        """Find all the targets without a box on top in the map and return their positions"""
+        targets = []
+        for y, row in enumerate(self.map):
+            for x, cell in enumerate(row):
+                if self.is_target_without_box((y, x)):
+                    targets.append((y, x))
+        return targets
+
     # ------------------------------------------------------------------------------------------------------------------
     # The following methods are used to check if a position is a wall, box, target, or empty space
     # The position is a tuple (row, column)
@@ -101,6 +111,14 @@ class GameState:
         """
         x, y = position
         if self.map[x][y] in (".", "*"):
+            return True
+        return False
+
+    def is_target_without_box(self, position):
+        """Check if the given position is a target
+        without a box on top"""
+        x, y = position
+        if self.map[x][y] in ("."):
             return True
         return False
 
@@ -140,7 +158,7 @@ class GameState:
         for box in self.boxes:
             distances = [
                 abs(box[0] - target[0]) + abs(box[1] - target[1])
-                for target in self.targets
+                for target in self.targets_without_box
             ]
             if distances:
                 total_distance += min(distances)
