@@ -117,8 +117,6 @@ class Solver(object):
                 if str(neighbor.map) not in visited:
                     # Compare value is the total cost of the state
                     neighbor.compare_value = neighbor.get_total_cost()
-                    # Set the parent of the neighbor to the current state
-                    neighbor.parent = state
                     # The object with format (compare_value, state, path) is added to the priority queue
                     priority_queue.put(
                         (neighbor.compare_value, neighbor, path + [neighbor.last_move])

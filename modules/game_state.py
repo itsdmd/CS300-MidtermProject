@@ -35,7 +35,6 @@ class GameState:
         self.targets = self.find_targets()
         self.targets_without_box = self.find_targets_without_box()
         self.is_solved = self.check_solved()
-        self.parent = None
         self.compare_value = 0
         self.last_move = "N"
 
@@ -281,7 +280,7 @@ class GameState:
                 return self
 
             # If the box is pushed to a target
-            if self.is_target(new_box_pos):
+            if self.is_target_without_box(new_box_pos):
                 # Update the box position
                 if self.map[new_pos[0]][new_pos[1]] == "*":
                     self.map[new_pos[0]][new_pos[1]] = "."
@@ -322,7 +321,6 @@ class GameState:
         neighbors = []
         for direction in ["U", "D", "L", "R"]:
             neighbor = deepcopy(self)
-            neighbor.parent = deepcopy(self)
             neighbor.move(direction)
             # neighbor.print_state()
             neighbors.append(neighbor)
