@@ -48,7 +48,6 @@ class GameState:
 
     def find_player(self):
         """Find the player in the map and return its position"""
-        # TODO: implement this method
         for y, row in enumerate(self.map):
             for x, cell in enumerate(row):
                 if cell in ("@", "+"):  # Player or player on target
@@ -150,18 +149,18 @@ class GameState:
         return nearest_target
 
     def get_heuristic(self):
-        """Get the heuristic for the game state
-        Note: the heuristic is the sum of the distances from all the boxes to their nearest targets
-        """
-        total_distance = 0
+        heuristic_value = 0
         for box in self.boxes:
             distances = [
-                abs(box[0] - target[0]) + abs(box[1] - target[1])
+                # Get all distances from this box to all targets without a box on top
+                self.get_distance(box, target)
                 for target in self.targets_without_box
             ]
             if distances:
-                total_distance += min(distances)
-        return total_distance
+                # Add the minimum distance to the heuristic value
+                heuristic_value += min(distances)
+
+        return heuristic_value
 
     def get_total_cost(self):
         """Get the cost for the game state
@@ -213,8 +212,6 @@ class GameState:
         - The player cannot push a box to a wall
         - The player cannot push two boxes at the same time
         """
-        # TODO: implement this method
-
         self.last_move = direction
         new_pos = self.new_position(self.player, direction)
 
@@ -231,7 +228,7 @@ class GameState:
             return self
 
         # Check if player is on target and not on box-on-target
-        if self.is_target(new_pos) and not self.is_box(new_pos):
+        if self.is_target_without_box(new_pos):
             if self.map[self.player[0]][self.player[1]] == "+":
                 self.map[self.player[0]][self.player[1]] = "."
             else:
