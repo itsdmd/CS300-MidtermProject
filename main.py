@@ -30,6 +30,9 @@ if __name__ == "__main__":
     solver = Solver(game_state, strategy)
     solver.solve()
     solution = solver.get_solution()
+    if solution is None:
+        print("No solution found")
+        exit(1)
     solver.print_num_of_expanded_nodes()
     solver.print_number_of_moves()
     solver.print_solution()
