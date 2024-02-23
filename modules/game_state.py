@@ -201,6 +201,47 @@ class GameState:
         else:
             raise Exception("Invalid direction")
 
+    def is_deadlock_box(self, box):
+        """Check if a given box cannot be moved
+        by checking whether it is adjacent to 2 diagonally opposite walls
+        """
+        # Make sure the box is not on target
+        if self.map[box[0]][box[1]] == "$":
+            # Get adjacent horizontal and vertical cells coordinates
+            adjacent_cells = [
+                (box[0] - 1, box[1]),  # Left
+                (box[0] + 1, box[1]),  # Right
+                (box[0], box[1] - 1),  # Up
+                (box[0], box[1] + 1),  # Down
+            ]
+            # Check if the box is adjacent to 2 diagonally opposite walls
+            # Iterate through all horizontal and vertical adjacent cells
+            for i in range(len(adjacent_cells)):
+                # For each adjacent cell, check if there is another adjacent cell that is diagonally opposite
+                for j in range(i + 1, len(adjacent_cells)):
+                    # The cell is diagonally opposite if the row and column differences are both 2
+                    if (
+                        self.is_wall(adjacent_cells[i])
+                        and self.is_wall(adjacent_cells[j])
+                        and (
+                            (i == 0 and j == 2)  # Left and Up
+                            or (i == 0 and j == 3)  # Left and Down
+                            or (i == 1 and j == 2)  # Right and Down
+                            or (i == 1 and j == 3)  # Right and Up
+                        )
+                    ):
+                        return True
+        return False
+
+    def has_deadlock_box(self):
+        """Check if the game state has a deadlock box
+        (a box that cannot be pushed to a target because it is in a deadlock position)
+        """
+        for box in self.boxes:
+            if self.is_deadlock_box(box):
+                return True
+        return False
+
     def move(self, direction):
         """Generate the next game state by moving the player to the given direction.
         The rules are as follows:
@@ -320,7 +361,8 @@ class GameState:
             neighbor = deepcopy(self)
             neighbor.move(direction)
             # neighbor.print_state()
-            neighbors.append(neighbor)
+            if not neighbor.has_deadlock_box():
+                neighbors.append(neighbor)
         return neighbors
 
     def check_solved(self):

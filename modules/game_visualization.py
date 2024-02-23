@@ -103,7 +103,7 @@ class GameVisualization(object):
         for i in range(len(self.solution)):
             self.game_state = self.game_state.move(self.solution[i])
             self.draw(self.solution[i])
-            time.sleep(0.5)
+            time.sleep(0.01)
 
     def start(self):
         self.init_pygame()
