@@ -33,10 +33,11 @@ if __name__ == "__main__":
     if solution is None:
         print("No solution found")
         exit(1)
-    solver.print_num_of_expanded_nodes()
+    solver.print_num_of_generated()
+    solver.print_num_of_expanded()
     solver.print_number_of_moves()
-    solver.print_solution()
     solver.print_time()
+    solver.print_solution()
 
-    game_visualization = GameVisualization(game_state, solution)
-    game_visualization.start()
+    # game_visualization = GameVisualization(game_state, solution)
+    # game_visualization.start()

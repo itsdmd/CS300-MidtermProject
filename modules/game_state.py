@@ -78,7 +78,7 @@ class GameState:
         targets = []
         for y, row in enumerate(self.map):
             for x, cell in enumerate(row):
-                if self.is_target_without_box((y, x)):
+                if self.is_target((y, x)) and not self.is_box((y, x)):
                     targets.append((y, x))
         return targets
 
@@ -109,14 +109,6 @@ class GameState:
         """
         x, y = position
         if self.map[x][y] in (".", "*"):
-            return True
-        return False
-
-    def is_target_without_box(self, position):
-        """Check if the given position is a target
-        without a box on top"""
-        x, y = position
-        if self.map[x][y] in ("."):
             return True
         return False
 
@@ -201,7 +193,7 @@ class GameState:
         else:
             raise Exception("Invalid direction")
 
-    def is_deadlock_box(self, box):
+    def box_is_stuck(self, box):
         """Check if a given box cannot be moved
         by checking whether it is adjacent to 2 diagonally opposite walls
         """
@@ -238,7 +230,7 @@ class GameState:
         (a box that cannot be pushed to a target because it is in a deadlock position)
         """
         for box in self.boxes:
-            if self.is_deadlock_box(box):
+            if self.box_is_stuck(box):
                 return True
         return False
 
@@ -269,7 +261,7 @@ class GameState:
             return self
 
         # Check if player is on target and not on box-on-target
-        if self.is_target_without_box(new_pos):
+        if self.is_target(new_pos) and not self.is_box(new_pos):
             if self.map[self.player[0]][self.player[1]] == "+":
                 self.map[self.player[0]][self.player[1]] = "."
             else:
@@ -318,7 +310,7 @@ class GameState:
                 return self
 
             # If the box is pushed to a target
-            if self.is_target_without_box(new_box_pos):
+            if self.is_target(new_box_pos) and not self.is_box(new_box_pos):
                 # Update the box position
                 if self.map[new_pos[0]][new_pos[1]] == "*":
                     self.map[new_pos[0]][new_pos[1]] = "."

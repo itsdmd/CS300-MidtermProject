@@ -1,4 +1,4 @@
-# CS300 Artificial Intelligent</br>Lab Midterm Project
+# CS300 Artificial Intelligent - Lab Midterm Project
 
 > **Instructors:** _Dr. Nguyen Ngoc Thao, Msc. Do Trong Le - Nguyen Quang Thuc_
 >
@@ -29,11 +29,17 @@ Each step of the solution will be represented as a state of the game. Each state
 -   Box on target: `*`
 -   Player on target: `+`
 
+<br/>
+
+<br/>
+
+<br/>
+
 Example:
 
-![01](./img/01.png)
+<img src="./img/01.png" title="" alt="01" width="331">
 
-The neighbor states of a state are the states that can be reached from the current state by moving the player in one of the four directions, or by pushing a box in one of the four directions. States will be deduplicated and stored in a queue, stack, or priority queue, depending on the algorithm used.
+The neighbor (or successor) states of a state are the states that can be reached from the current state by moving the player in one of the four directions, or by pushing a box in one of the four directions. States will be deduplicated and stored in a queue, stack, or priority queue, depending on the algorithm used.
 
 ### Algorithms
 
@@ -46,9 +52,13 @@ The program will read the input from a file, which contains the initial state of
 -   Greedy Best-First Search
 -   and a custom algorithm
 
+To help minimize the number of states generated, the program can identify whether a state has box(es) that is stuck in a corner and will not add those states into the queue/stack. It will also help to identify whether a map can be solved without having to generate all possible states.
+
+Due to the rule _"The cost of every move is equal"_, BFS and UCS are expected to perform quite similarly.
+
 ### Heuristics
 
-For algorithms that use heuristics (A\*, UCS, GBFS), the sum of Manhattan distances of each box on the board to its nearest target will be used.
+For algorithms that use heuristics (A\*, GBFS), the sum of Manhattan distances of each box on the board to its nearest target will be used.
 
 Hamming distance will not be suitable for this problem, since until a state with at least one box on a target is reached, the Hamming distance will be equal to $N \times 2$, with $N$ being the number of boxes on the board.
 
@@ -56,36 +66,118 @@ Hamming distance will not be suitable for this problem, since until a state with
 
 **System Specification**
 
-| Property      | Value                                        |
-| ------------- | -------------------------------------------- |
-| OS            | Windows 11 Pro 23H2 (22631.3007)             |
-| Processor     | Intel(R) Core(TM) i7-10750H CPU @ 2.60GHz    |
-| Installed RAM | 32.0 GB (31.8 GB usable, 30.2 GB free)       |
-| System type   | 64-bit operating system, x64-based processor |
+| Property  | Value                               |
+| --------- | ----------------------------------- |
+| OS        | Ubuntu 22.04.4 LTS, 64-bit          |
+| Processor | Intel® Xeon(R) E5-2680 v4 @ 2.40GHz |
+| Memory    | 256.0 GiB                           |
 
 **Results**
 
-Each algorithm will be ran 3 times. The result will be the average time (rounded to 3 decimal places), number of expanded nodes, and path length of the 3 tests.
+`maps/sokoban1.txt`
 
-[`maps/demo_1.txt`](https://github.com/itsdmd/CS300-MidtermProject/blob/main/maps/demo_1.txt) (8x6):
+```
+######
+#    #
+# #  #
+#*$ .#
+#@####
+# ####
+######
+```
 
-| Algorithm | Time (s) | Expanded Nodes | Path Length |
-| --------- | -------- | -------------- | ----------- |
-| BFS       | 0.240    | 344            | 6           |
-| DFS       | 0.112    | 79             | 12          |
-| UCS       | 0.286    | 404            | 6           |
-| A\*       | 0.078    | 140            | 6           |
-| GBFS      | 0.016    | 36             | 6           |
+| Algorithm | Time (s) | No. Nodes Generated | No. Nodes Expanded | Solution Length |
+| --------- | -------- | ------------------- | ------------------ | --------------- |
+| BFS       | 0.005    | 36                  | 19                 | 8               |
+| DFS       | 0.003    | 25                  | 12                 | 8               |
+| UCS       | 0.006    | 36                  | 19                 | 8               |
+| A\*       | 0.006    | 37                  | 20                 | 8               |
+| GBFS      | 0.004    | 28                  | 14                 | 8               |
 
-[`maps/demo_2.txt`](https://github.com/itsdmd/CS300-MidtermProject/blob/main/maps/demo_2.txt) (10x8):
+<br/>
 
-| Algorithm | Time (s) | Expanded Nodes | Path Length |
-| --------- | -------- | -------------- | ----------- |
-| BFS       | 31.618   | 9652           | 26          |
-| DFS       | 14.362   | 1747           | 52          |
-| UCS       | 29.712   | 9288           | 26          |
-| A\*       | 9.975    | 3964           | 26          |
-| GBFS      | 2.271    | 904            | 32          |
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+`maps/sokoban2.txt`
+
+```
+#######
+###@ .#
+# $ #.#
+#  $$ #
+#.  # #
+#   $.#
+#######
+```
+
+| Algorithm | Time (s) | No. Nodes Generated | No. Nodes Expanded | Solution Length |
+| --------- | -------- | ------------------- | ------------------ | --------------- |
+| BFS       | 6.689    | 41532               | 17251              | 144             |
+| DFS       | 5.372    | 32514               | 13558              | 547             |
+| UCS       | 7.199    | 41530               | 17251              | 144             |
+| A\*       | 7.175    | 41509               | 17242              | 144             |
+| GBFS      | 6.797    | 38393               | 15920              | 198             |
+
+`maps/sokoban3.txt`
+
+```
+########
+###   ##
+#.@$  ##
+### $.##
+#.##$ ##
+# # . ##
+#$ *$$.#
+#   .  #
+########
+```
+
+| Algorithm | Time (s) | No. Nodes Generated | No. Nodes Expanded | Solution Length |
+| --------- | -------- | ------------------- | ------------------ | --------------- |
+| BFS       | 21.127   | 95987               | 36761              | 34              |
+| DFS       | 431.402  | 2017390             | 784578             | 142             |
+| UCS       | 20.695   | 89904               | 34700              | 34              |
+| A\*       | 8.312    | 35011               | 13669              | 34              |
+| GBFS      | 4.857    | 21881               | 8591               | 38              |
+
+`maps/sokoban4.txt`
+
+```
+#######
+#     #
+# #$@ #
+# * *##
+##.* ##
+# $ .##
+#    ##
+#######
+```
+
+| Algorithm | Time (s) | No. Nodes Generated | No. Nodes Expanded | Solution Length |
+| --------- | -------- | ------------------- | ------------------ | --------------- |
+| BFS       | 27.043   | 156302              | 63570              | 72              |
+| DFS       | 28.035   | 158297              | 64446              | 174             |
+| UCS       | 28.523   | 156082              | 63483              | 72              |
+| A\*       | 29.188   | 154006              | 62610              | 72              |
+| GBFS      | 13.364   | 73228               | 29993              | 108             |
+
+> [Proof of result](#proof-of-result) can be found inside [Appendix](#appendix) at the end of the document.
 
 ### Usage
 
@@ -98,10 +190,17 @@ Each algorithm will be ran 3 times. The result will be the average time (rounded
 python main.py --map maps/custom_map.txt --strategy astar
 ```
 
-### Notes
+**Notes**
 
 -   The program requires Python 3, and the Pygame library to be installed (`pip install pygame`).
--   The program will not check if the initial state is solvable, and it will not prevent the player from creating unsolvable states during the game. Therefore, the program will only stop when the game is solved, or when the algorithm has reached the maximum number of iterations.
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
 
 ## Project Structure
 
@@ -112,3 +211,113 @@ python main.py --map maps/custom_map.txt --strategy astar
     -   `game_state.py`: The module containing the `GameState` class, which represents the state of the game.
     -   `game_visualization.py`: The module containing the `GameVisualization` class, which is responsible for the GUI.
     -   `solver.py`: The module containing the `Solver` class, which is responsible for solving the game using different algorithms.
+
+## Appendix
+
+### Proof of result
+
+#### System configuration
+
+<img title="" src="./img/system.png" alt="Screenshot from 2024-02-25 18-16-14-2.png" width="220">
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+#### sokoban1.txt
+
+<img src="./img/1-b.png" title="" alt="1-b.png" width="370">
+
+<img src="./img/1-d.png" title="" alt="1-d.png" width="370">
+
+<img src="./img/1-u.png" title="" alt="1-u.png" width="370">
+
+<img src="./img/1-a.png" title="" alt="1-a.png" width="370">
+
+<img src="./img/1-g.png" title="" alt="1-g.png" width="370">
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+#### sokoban2.txt
+
+<img src="./img/2-b.png" title="" alt="2-b.png" width="370">
+
+<img src="./img/2-d.png" title="" alt="2-d.png" width="370">
+
+<img src="./img/2-u.png" title="" alt="2-u.png" width="370">
+
+<img src="./img/2-a.png" title="" alt="2-a.png" width="370">
+
+<img src="./img/2-g.png" title="" alt="2-g.png" width="370">
+
+#### sokoban3.txt
+
+<img src="./img/3-b.png" title="" alt="3-b.png" width="370">
+
+<img src="./img/3-d.png" title="" alt="3-d.png" width="370">
+
+<img src="./img/3-u.png" title="" alt="3-u.png" width="370">
+
+<img src="./img/3-a.png" title="" alt="3-a.png" width="370">
+
+<img src="./img/3-g.png" title="" alt="3-g.png" width="370">
+
+#### sokoban4.txt
+
+<img src="./img/4-b.png" title="" alt="4-b.png" width="370">
+
+<img src="./img/4-d.png" title="" alt="4-d.png" width="370">
+
+<img src="./img/4-u.png" title="" alt="4-u.png" width="370">
+
+<img src="./img/4-a.png" title="" alt="4-a.png" width="370">
+
+<img src="./img/4-g.png" title="" alt="4-g.png" width="370">
