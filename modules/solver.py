@@ -63,6 +63,8 @@ class Solver(object):
             # Generate the neighbors of the state
             for neighbor in state.generate_neighbors():
                 self.num_of_expanded_nodes += 1
+                if neighbor.check_solved():
+                    return path + [neighbor.last_move]
                 # If the neighbor has not been visited, add it to the back of the queue.
                 if str(neighbor.map) not in visited:
                     queue.append((neighbor, path + [neighbor.last_move]))
@@ -80,6 +82,8 @@ class Solver(object):
 
             for neighbor in state.generate_neighbors():
                 self.num_of_expanded_nodes += 1
+                if neighbor.check_solved():
+                    return path + [neighbor.last_move]
                 if str(neighbor.map) not in visited:
                     result = dfs_recursive(
                         neighbor, path + [neighbor.last_move], visited
@@ -114,6 +118,8 @@ class Solver(object):
 
             for neighbor in state.generate_neighbors():
                 self.num_of_expanded_nodes += 1
+                if neighbor.check_solved():
+                    return path + [neighbor.last_move]
                 if str(neighbor.map) not in visited:
                     # Compare value is the total cost of the state
                     neighbor.compare_value = neighbor.get_total_cost()
@@ -143,6 +149,8 @@ class Solver(object):
 
             for neighbor in state.generate_neighbors():
                 self.num_of_expanded_nodes += 1
+                if neighbor.check_solved():
+                    return path + [neighbor.last_move]
                 if str(neighbor.map) not in visited:
                     neighbor.compare_value = cost + 1
                     priority_queue.put(
@@ -172,6 +180,8 @@ class Solver(object):
 
             for neighbor in state.generate_neighbors():
                 self.num_of_expanded_nodes += 1
+                if neighbor.check_solved():
+                    return path + [neighbor.last_move]
                 if str(neighbor.map) not in visited:
                     neighbor.compare_value = neighbor.get_heuristic()
                     priority_queue.put(

@@ -361,15 +361,21 @@ class GameState:
             neighbor = deepcopy(self)
             neighbor.move(direction)
             # neighbor.print_state()
-            if not neighbor.has_deadlock_box():
-                neighbors.append(neighbor)
+
+            # If generated neighbor does not have a deadlock box and is not have the same map as the current state
+            if not neighbor.has_deadlock_box() and str(neighbor.map) != str(self.map):
+                if neighbor.check_solved():
+                    return [neighbor]
+                else:
+                    neighbors.append(neighbor)
         return neighbors
 
     def check_solved(self):
         """Check if the game is solved"""
-        if self.get_heuristic() == 0:
-            return True
-        return False
+        for target in self.targets:
+            if self.map[target[0]][target[1]] != "*":
+                return False
+        return True
 
     def print_state(self):
         """Print the game state"""
