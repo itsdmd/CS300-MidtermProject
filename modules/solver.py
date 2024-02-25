@@ -1,14 +1,3 @@
-# Solver for sokuban game using following search strategies:
-# - Breadth-first search
-# - Depth-first search
-# - A* search
-# - Uniform-cost search
-# - Greedy search
-# - Custom strategy
-# The solver class has the following methods:
-# - solve(): solve the game
-# """
-
 import time
 from collections import deque
 from queue import Queue, PriorityQueue
@@ -210,7 +199,9 @@ class Solver(object):
     def custom(self):
         return [
             "U",
-            "U",
+            "D",
+            "L",
+            "R",
         ]
 
     def get_solution(self):

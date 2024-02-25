@@ -39,5 +39,5 @@ if __name__ == "__main__":
     solver.print_time()
     solver.print_solution()
 
-    # game_visualization = GameVisualization(game_state, solution)
-    # game_visualization.start()
+    game_visualization = GameVisualization(game_state, solution)
+    game_visualization.start()

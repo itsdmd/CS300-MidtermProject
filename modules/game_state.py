@@ -13,9 +13,29 @@ The game state also keeps track of the player and box positions, and whether the
 The game state class has the following methods:
 - find_player(): find the player in the map and return its position
 - find_boxes(): find all the boxes in the map and return their positions
-- find_targets(): find all the targets in the map and return their positions  
-- generate_next_state(direction): generate the next game state by moving the player to the given direction
+- find_targets(): find all the targets in the map and return their positions
+- find_targets_without_box(): find all the targets without a box on top in the map and return their positions
+
+- is_wall(position): check if the given position is a wall
+- is_box(position): check if the given position is a box
+- is_target(position): check if the given position is a target
+- is_empty(position): check if the given position is empty
+
+- get_distance(position1, position2): get the distance between two positions using Manhattan distance
+- get_nearest_target(position): get the nearest target from the given position by exhaustive iteration
+- get_heuristic(): get the heuristic for the game state
+- get_total_cost(): get the sum of the current cost and the heuristic
+- get_current_cost(): get the current cost for the game state
+
+- new_position(position, direction): get the new position after moving to the given direction
+- is_stuck(box): check if a given box cannot be moved
+- has_stuck_box(): check if the game state has a stuck box
+
+- move(direction): generate the next game state by moving the player to the given direction
+
+- generate_neighbors(): generate the neighbors/successors of the game state by moving the player in all directions
 - check_solved(): check if the game is solved
+- print_state(): print the game state
 """
 
 from copy import deepcopy
@@ -193,7 +213,7 @@ class GameState:
         else:
             raise Exception("Invalid direction")
 
-    def box_is_stuck(self, box):
+    def is_stuck(self, box):
         """Check if a given box cannot be moved
         by checking whether it is adjacent to 2 diagonally opposite walls
         """
@@ -225,12 +245,12 @@ class GameState:
                         return True
         return False
 
-    def has_deadlock_box(self):
+    def has_stuck_box(self):
         """Check if the game state has a deadlock box
         (a box that cannot be pushed to a target because it is in a deadlock position)
         """
         for box in self.boxes:
-            if self.box_is_stuck(box):
+            if self.is_stuck(box):
                 return True
         return False
 
@@ -355,7 +375,7 @@ class GameState:
             # neighbor.print_state()
 
             # If generated neighbor does not have a deadlock box and is not have the same map as the current state
-            if not neighbor.has_deadlock_box() and str(neighbor.map) != str(self.map):
+            if not neighbor.has_stuck_box() and str(neighbor.map) != str(self.map):
                 if neighbor.check_solved():
                     return [neighbor]
                 else:
